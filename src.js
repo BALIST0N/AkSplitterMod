@@ -401,11 +401,30 @@ class AkSplitterMod
                         {
                             bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_slr_ion_lite_704");
                         }
-
-                        
                     })
                     
-                    
+                    console.log(botType + " -> "+ weapon )
+                    bots[botType].inventory.mods[weapon]["mod_handguard"].forEach(handguard => 
+                    {
+
+                        let slotsNames = [];
+                        items[handguard]._props.Slots.forEach(handguardSlot =>
+                        {
+                            slotsNames.push(handguardSlot._name);
+                        })
+
+                        if(bots[botType].inventory.mods[handguard] !== undefined )
+                        {
+                            Object.keys(bots[botType].inventory.mods[handguard]).forEach(key => 
+                            {
+                                if(slotsNames.includes(key) == false ) 
+                                {   
+                                    delete bots[botType].inventory.mods[handguard][key];
+                                }
+                            });
+                        }
+
+                    })
 
                 }
             }
