@@ -412,7 +412,11 @@ class AkSplitterMod
 
             gasblocksToChanges.forEach(gasblock => 
             {
-                bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
+                if(bots[botType].inventory.mods[gasblock] !== undefined && bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
+                {
+                    bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
+                }
+
             })
 
             botTypeModsData[botType] = bots[botType].inventory.mods
