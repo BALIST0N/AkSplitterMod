@@ -403,7 +403,6 @@ class AkSplitterMod
                         }
                     })
                     
-                    console.log(botType + " -> "+ weapon )
                     bots[botType].inventory.mods[weapon]["mod_handguard"].forEach(handguard => 
                     {
 
