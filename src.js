@@ -339,52 +339,80 @@ class AkSplitterMod
         
         /***********************************************  BOT GENERATION FIXING ****************************************/
         
- 
-        let botTypeModsData = {};
 
+        let botTypeModsData = {};
+        let gasblocksToChanges = [];
         for(let botType in bots)
         {
-            let gasblocks = [];
             for(let weapon in bots[botType].inventory.mods)
             {
                 if(entireAkFamily.indexOf(weapon) != -1 ) //if the preset base weapon is an ak family weapon
                 {
-                    bots[botType].inventory.mods[weapon]["mod_handguard"] = []
+                    bots[botType].inventory.mods[weapon]["mod_handguard"] = [];
+
                     bots[botType].inventory.mods[weapon]["mod_gas_block"].forEach( gasblock => 
                     {
-                        if(gasblocks.includes(gasblock) == false )
+                        if(bots[botType].inventory.mods[gasblock] !== undefined)
                         {
-                            gasblocks.push( gasblock );
+                            if(bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
+                            {
+                                bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard =>
+                                {
+                                    if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes(handguard) == false)
+                                    {
+                                        bots[botType].inventory.mods[weapon]["mod_handguard"].push(handguard);
+                                    }
+                                });
+
+                                gasblocksToChanges.push(gasblock);
+                            }
+                            else
+                            {
+                                //railed gastube combo
+                                switch(items[gasblock]._name)
+                                {
+                                    case "gas_block_ak_troy_top_bottom_vent_hole_combo":
+                                        if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_ak_troy_vent_hole_lower") == false)
+                                        {
+                                            bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_ak_troy_vent_hole_lower");
+                                        }
+                                        break;
+
+                                    case "gas_block_ak_vs_vs_33c_wht":
+                                        if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_ak_vs_vs_33c_wht_lower") == false)
+                                        {
+                                            bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_ak_vs_vs_33c_wht_lower");
+                                        }
+                                        break;
+
+                                    case "gas_block_ak_vs_vs_33c":
+                                        if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_ak_vs_vs_33c_lower") == false)
+                                        {
+                                            bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_ak_vs_vs_33c_lower");
+                                        }
+                                        break;
+                                }
+
+                            }
+
+                            
                         }
+                        else //its a rd-704
+                        {
+                            bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_slr_ion_lite_704");
+                        }
+
+                        
                     })
+                    
+                    
+
                 }
             }
 
-            gasblocks.forEach(gasblock => 
-            {   
-                if(bots[botType].inventory.mods[gasblock] !== undefined)
-                {
-                    if(bots[botType].inventory.mods[gasblock]["mod_handguard"] !== undefined)
-                    {   
-                        for(let weapon in bots[botType].inventory.mods)
-                        {
-                            if(entireAkFamily.indexOf(weapon) != -1 ) //if the preset base weapon is an ak family weapon
-                            {
-                                bots[botType].inventory.mods[weapon]["mod_handguard"] = bots[botType].inventory.mods[weapon]["mod_handguard"].concat(bots[botType].inventory.mods[gasblock]["mod_handguard"]);
-                            }
-                        }
-                        bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
-                    }
-                    else
-                    {                               
-                        //combo gas tube ...
-                    }
-                }
-                else
-                {
-                    //bots[botType].inventory.mods["628a60ae6b1d481ff772e9c8"]["mod_handguard"] = ["handguard_slr_ion_lite_704"]
-                }
-                
+            gasblocksToChanges.forEach(gasblock => 
+            {
+                bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
             })
 
             botTypeModsData[botType] = bots[botType].inventory.mods
