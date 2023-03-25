@@ -414,10 +414,7 @@ class AkSplitterMod
                                         }
                                         break;
                                 }
-
                             }
-
-                            
                         }
                         else //its a rd-704
                         {
@@ -481,7 +478,7 @@ class AkSplitterMod
                     bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd;
                 }
             });
-            
+
 
             botTypeModsData[botType] = bots[botType].inventory.mods
         }
