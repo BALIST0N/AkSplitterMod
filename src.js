@@ -396,6 +396,10 @@ class AkSplitterMod
                                         if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_ak_troy_vent_hole_lower") == false)
                                         {
                                             bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_ak_troy_vent_hole_lower");
+                                            delete bots[botType].inventory.mods[gasblock]["mod_tactical"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_000"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_001"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_002"];
                                         }
                                         break;
 
@@ -403,6 +407,13 @@ class AkSplitterMod
                                         if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_ak_vs_vs_33c_wht_lower") == false)
                                         {
                                             bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_ak_vs_vs_33c_wht_lower");
+                                            delete bots[botType].inventory.mods[gasblock]["mod_foregrip"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_000"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_001"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_002"];
+
+                                            let index = bots[botType].inventory.mods[weapon]["mod_gas_block"].indexOf("5d4aab30a4b9365435358c55")
+                                            bots[botType].inventory.mods[weapon]["mod_gas_block"][index] = "5cf656f2d7f00c06585fb6eb";
                                         }
                                         break;
 
@@ -410,6 +421,10 @@ class AkSplitterMod
                                         if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_ak_vs_vs_33c_lower") == false)
                                         {
                                             bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_ak_vs_vs_33c_lower");
+                                            delete bots[botType].inventory.mods[gasblock]["mod_foregrip"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_000"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_001"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_002"];
                                         }
                                         break;
                                 }
@@ -449,35 +464,39 @@ class AkSplitterMod
             let uppersToAdd = [];
             gasblocksToChanges.forEach(gasblock => 
             {
-                if(bots[botType].inventory.mods[gasblock] !== undefined && bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
+                
+                if(bots[botType].inventory.mods[gasblock] === undefined )
                 {
-                    //bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
-                    bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard => 
-                    {
-                        if(uppersToAdd.includes(items[handguard]._name) == false && Object.keys(uppersToAdd).includes(items[handguard]._name) == true) 
-                        {   
-                            uppersToAdd.push( lowerAndUppers[items[handguard]._name] );
-                        }
-                        else
-                        {
-                            if(Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true)
-                            {
-                                bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];
-                            }
-                        }
-                    })
+                    bots[botType].inventory.mods[gasblock] = {"mod_handguard":[]}
                 }
+                
+                if(bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == false)
+                {
+                    //nothing should pass here 
+                }
+                
+                bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard => 
+                {
 
+                    if(lowerAndUppers[items[handguard]._name] !== undefined && uppersToAdd.indexOf( lowerAndUppers[items[handguard]._name] ) == -1) 
+                    {   
+                        uppersToAdd.push( lowerAndUppers[items[handguard]._name] );
+                    }
+                    else
+                    {
+                        if(Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true)
+                        {
+                            bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];
+                        }
+                    }
+                })
             })
             
             gasblocksToChanges.forEach(gasblock => 
             {
-                if(bots[botType].inventory.mods[gasblock] !== undefined && bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
-                {
-                    bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd;
-                }
-            });
+                bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd;
 
+            });
 
             botTypeModsData[botType] = bots[botType].inventory.mods
         }
