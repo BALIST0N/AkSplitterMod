@@ -342,6 +342,28 @@ class AkSplitterMod
 
         let botTypeModsData = {};
         let gasblocksToChanges = [];
+        let lowerAndUppers =
+        {            
+            "handguard_ak_caa_quad_rail_polymer":"handguard_ak_caa_quad_rail_polymer_upper",
+            "handguard_ak_izhmash_ak74_std_plum":"handguard_ak_izhmash_ak74_std_plum_upper",
+            "handguard_ak_tdi_akm_l":"handguard_ak_khyber_swiss_grather_upper",
+            "handguard_ak_tdi_akm_l_gld":"handguard_ak_khyber_swiss_grather_upper",
+            "handguard_ak_tdi_akm_l_red":"handguard_ak_khyber_swiss_grather_upper",
+            "handguard_ak_izhmash_ak74_std_wood":"handguard_ak_izhmash_ak74_std_wood_upper",
+            "handguard_ak_izhmash_ak74m_std_plastic":"handguard_ak_izhmash_ak74m_std_plastic_upper",
+            "handguard_ak_izhmash_ak100_rail_plastic":"handguard_ak_izhmash_ak74m_std_plastic_upper",
+            "handguard_ak_cugir_arms_factory_wasr_10_63_std":"handguard_ak_izhmash_akm_std_wood_upper",
+            "handguard_ak_izhmash_akm_std_wood":"handguard_ak_izhmash_akm_std_wood_upper",
+            "handguard_ak_molot_vepr_km_vpo_136":"handguard_ak_molot_vepr_km_vpo_136_upper",
+            "handguard_ak_molot_vepr_km_vpo_209":"handguard_ak_molot_vepr_km_vpo_209_upper",
+            "handguard_ak_magpul_moe_ak_blk":"handguard_ak_magpul_moe_ak_blk_upper",
+            "handguard_ak_magpul_moe_ak_fde":"handguard_ak_magpul_moe_ak_fde_upper",
+            "handguard_ak_magpul_moe_ak_od":"handguard_ak_magpul_moe_ak_od_upper",
+            "handguard_ak_magpul_moe_ak_plm":"handguard_ak_magpul_moe_ak_plm_upper",
+            "handguard_ak_magpul_moe_ak_sg":"handguard_ak_magpul_moe_ak_sg_upper",
+            "handguard_ak_zenit_b10":"handguard_ak_izhmash_ak74m_std_plastic_upper"
+        }
+
         for(let botType in bots)
         {
             for(let weapon in bots[botType].inventory.mods)
@@ -428,14 +450,38 @@ class AkSplitterMod
                 }
             }
 
+            let uppersToAdd = [];
             gasblocksToChanges.forEach(gasblock => 
             {
                 if(bots[botType].inventory.mods[gasblock] !== undefined && bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
                 {
-                    bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
+                    //bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards;
+                    bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard => 
+                    {
+                        if(uppersToAdd.includes(items[handguard]._name) == false && Object.keys(uppersToAdd).includes(items[handguard]._name) == true) 
+                        {   
+                            uppersToAdd.push( lowerAndUppers[items[handguard]._name] );
+                        }
+                        else
+                        {
+                            if(Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true)
+                            {
+                                bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];
+                            }
+                        }
+                    })
                 }
 
             })
+            
+            gasblocksToChanges.forEach(gasblock => 
+            {
+                if(bots[botType].inventory.mods[gasblock] !== undefined && bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
+                {
+                    bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd;
+                }
+            });
+            
 
             botTypeModsData[botType] = bots[botType].inventory.mods
         }
@@ -514,8 +560,6 @@ class AkSplitterMod
                 }
             }
 
-
-            
             return weapon;
         }
 
