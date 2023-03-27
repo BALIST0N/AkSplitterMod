@@ -467,7 +467,7 @@ class AkSplitterMod
                         let slotsNames = [];
                         items[handguard]._props.Slots.forEach(handguardSlot =>
                         {
-                            slotsNames.push(handguardSlot._name);//get a lot of existing slots on the items json
+                            slotsNames.push(handguardSlot._name);//get a list of existing slots on the items json
                         })
 
                         if(bots[botType].inventory.mods[handguard] !== undefined )
@@ -482,9 +482,12 @@ class AkSplitterMod
                         }
                     })
                 }
+                else if(items[weapon]._weapClass !== undefined)
+                {
+                    //delete bots[botType].inventory.mods[weapon]; //for tesing purposes (only ak on bots)
+                }
             }
-
-            let uppersToAdd = []; 
+            
             gasblocksToChanges.forEach(gasblock => //loop to add uppers handguard to compatibles gasblock
             {
                 
@@ -500,32 +503,21 @@ class AkSplitterMod
                 
                 bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard => 
                 {
-                    //check compatibility for a type of handguard
-                    if(lowerAndUppers[items[handguard]._name] !== undefined && uppersToAdd.indexOf( lowerAndUppers[items[handguard]._name] ) == -1) 
+                    //check compatibility for a type of handguard              //if its a special handguard that doesn't use gasblock locking system
+                    if(lowerAndUppers[items[handguard]._name] === undefined && Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true) 
                     {   
-                        uppersToAdd.push( lowerAndUppers[items[handguard]._name] ); //add upper to the list, need to add later since we need all handguards for every weapon
+                        bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];//in that case we can push it directly into the handguard filter
                     }
-                    else
-                    {
-                        if(Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true) //if its a special handguard that doesn't use gasblock locking system
-                        {
-                            bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];//in that case we can push it directly into the handguard filter
-                        }
-                    }
+
                 })
+
+                bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards; //directly replace old lower list by the upper list
             })
             
-            gasblocksToChanges.forEach(gasblock => 
-            {
-                bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd; //directly replace lower list by the new upper list
-
-            });
-
             //botTypeModsData[botType] = bots[botType].inventory.mods 
         }
           
         //fs.writeFileSync(__dirname + "/bot_mods.json", JSON.stringify(botTypeModsData, null, 4) );
-        //bots = botTypeModsData //<- for testing purposes 
 
 
         /******************************************************* QUESTS REWARDS FIXING SCRIPT **********************************************************/
