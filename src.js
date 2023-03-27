@@ -363,33 +363,48 @@ class AkSplitterMod
             "handguard_ak_zenit_b10":"handguard_ak_izhmash_ak74m_std_plastic_upper"
         }
 
+
+        /* so i will try to explain what's goin on and what's the logic : 
+        for every bot  -> find all AK plateforms weapons -> get all gasblocks allowed for each weapons 
+        -> get a list of allowed handgaurd and store it & we need to modify gasblocks childs at the same time
+        -> then replace gasblock list by a upper handguards list
+        */
+
         for(let botType in bots)
         {
             for(let weapon in bots[botType].inventory.mods)
             {
                 if(entireAkFamily.indexOf(weapon) != -1 ) //if the preset base weapon is an ak family weapon
                 {
-                    bots[botType].inventory.mods[weapon]["mod_handguard"] = [];
-
+                    bots[botType].inventory.mods[weapon]["mod_handguard"] = []; //create the handguard slot for ak weapon
+                    
                     bots[botType].inventory.mods[weapon]["mod_gas_block"].forEach( gasblock => 
                     {
-                        if(bots[botType].inventory.mods[gasblock] !== undefined)
+                        if(bots[botType].inventory.mods[gasblock] !== undefined) //if there is a filter for this mod then
                         {
-                            if(bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true)
+                            
+                            if(bots[botType].inventory.mods[gasblock].hasOwnProperty("mod_handguard") == true) //check if the gasblock has handguard slot
                             {
-                                bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard =>
+                                if(gasblock == "5a01ad4786f77450561fda02") //vdm cs gas tube
                                 {
-                                    if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes(handguard) == false)
+                                    delete bots[botType].inventory.mods[gasblock]; //remove it we do,'t need to modify something
+                                }
+                                else
+                                {
+                                    bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard =>
                                     {
-                                        bots[botType].inventory.mods[weapon]["mod_handguard"].push(handguard);
-                                    }
-                                });
+                                        if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes(handguard) == false)
+                                        {
+                                            bots[botType].inventory.mods[weapon]["mod_handguard"].push(handguard); //store the gasblock handguard into the weapon slot
+                                        }
+                                    });
+                                    gasblocksToChanges.push(gasblock); //store gasblocks for removing and replacing new handguards later
+                                }
 
-                                gasblocksToChanges.push(gasblock);
                             }
-                            else
+                            else // its a railed gastube combo
                             {
-                                //railed gastube combo
+                                
                                 switch(items[gasblock]._name)
                                 {
                                     case "gas_block_ak_troy_top_bottom_vent_hole_combo":
@@ -427,6 +442,17 @@ class AkSplitterMod
                                             delete bots[botType].inventory.mods[gasblock]["mod_mount_002"];
                                         }
                                         break;
+
+                                    case "gas_block_akp_slr_ak_railed_gas_tube":
+                                        if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes("handguard_slr_ion_lite_704") == false)
+                                        {
+                                            bots[botType].inventory.mods[weapon]["mod_handguard"].push("handguard_slr_ion_lite_704");
+                                            delete bots[botType].inventory.mods[gasblock]["mod_foregrip"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_000"];
+                                            delete bots[botType].inventory.mods[gasblock]["mod_mount_001"];
+
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -436,22 +462,21 @@ class AkSplitterMod
                         }
                     })
                     
-                    bots[botType].inventory.mods[weapon]["mod_handguard"].forEach(handguard => 
+                    bots[botType].inventory.mods[weapon]["mod_handguard"].forEach(handguard => //loop for deleting non existant anymore slots on handguards 
                     {
-
                         let slotsNames = [];
                         items[handguard]._props.Slots.forEach(handguardSlot =>
                         {
-                            slotsNames.push(handguardSlot._name);
+                            slotsNames.push(handguardSlot._name);//get a lot of existing slots on the items json
                         })
 
                         if(bots[botType].inventory.mods[handguard] !== undefined )
                         {
                             Object.keys(bots[botType].inventory.mods[handguard]).forEach(key => 
                             {
-                                if(slotsNames.includes(key) == false ) 
+                                if(slotsNames.includes(key) == false ) //if the slot on the filter doesn't exist anymore on the json 
                                 {   
-                                    delete bots[botType].inventory.mods[handguard][key];
+                                    delete bots[botType].inventory.mods[handguard][key]; //delete it : ) 
                                 }
                             });
                         }
@@ -461,11 +486,11 @@ class AkSplitterMod
                 }
             }
 
-            let uppersToAdd = [];
-            gasblocksToChanges.forEach(gasblock => 
+            let uppersToAdd = []; 
+            gasblocksToChanges.forEach(gasblock => //loop to add uppers handguard to compatibles gasblock
             {
                 
-                if(bots[botType].inventory.mods[gasblock] === undefined )
+                if(bots[botType].inventory.mods[gasblock] === undefined ) //this can happen, just add it 
                 {
                     bots[botType].inventory.mods[gasblock] = {"mod_handguard":[]}
                 }
@@ -477,16 +502,16 @@ class AkSplitterMod
                 
                 bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard => 
                 {
-
+                    //check compatibility for a type of handguard
                     if(lowerAndUppers[items[handguard]._name] !== undefined && uppersToAdd.indexOf( lowerAndUppers[items[handguard]._name] ) == -1) 
                     {   
-                        uppersToAdd.push( lowerAndUppers[items[handguard]._name] );
+                        uppersToAdd.push( lowerAndUppers[items[handguard]._name] ); //add upper to the list, need to add later since we need all handguards for every weapon
                     }
                     else
                     {
-                        if(Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true)
+                        if(Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true) //if its a special handguard that doesn't use gasblock locking system
                         {
-                            bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];
+                            bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];//in that case we can push it directly into the handguard filter
                         }
                     }
                 })
@@ -494,15 +519,15 @@ class AkSplitterMod
             
             gasblocksToChanges.forEach(gasblock => 
             {
-                bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd;
+                bots[botType].inventory.mods[gasblock]["mod_handguard"] = uppersToAdd; //directly replace lower list by the new upper list
 
             });
 
-            botTypeModsData[botType] = bots[botType].inventory.mods
+            //botTypeModsData[botType] = bots[botType].inventory.mods 
         }
           
         //fs.writeFileSync(__dirname + "/bot_mods.json", JSON.stringify(botTypeModsData, null, 4) );
-
+        //bots = botTypeModsData //<- for testing purposes 
 
         /******************************************************* QUESTS REWARDS FIXING SCRIPT **********************************************************/
 
