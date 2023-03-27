@@ -480,9 +480,7 @@ class AkSplitterMod
                                 }
                             });
                         }
-
                     })
-
                 }
             }
 
@@ -529,8 +527,8 @@ class AkSplitterMod
         //fs.writeFileSync(__dirname + "/bot_mods.json", JSON.stringify(botTypeModsData, null, 4) );
         //bots = botTypeModsData //<- for testing purposes 
 
-        /******************************************************* QUESTS REWARDS FIXING SCRIPT **********************************************************/
 
+        /******************************************************* QUESTS REWARDS FIXING SCRIPT **********************************************************/
 
         for(let quest in quests)
         {
