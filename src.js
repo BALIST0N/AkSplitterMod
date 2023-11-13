@@ -15,7 +15,7 @@ class AkSplitterMod
         const quests = container.resolve("DatabaseServer").getTables().templates.quests;
         const globalsPresets = container.resolve("DatabaseServer").getTables().globals["ItemPresets"];
         const bots =  container.resolve("DatabaseServer").getTables().bots.types;
-
+        const profiles = container.resolve ("DatabaseServer").getTables().templates.profiles;
 
         /*************************************  DATA  ********************************************/
         const fs = require('fs');
@@ -126,8 +126,27 @@ class AkSplitterMod
             "handguard_slr_ion_lite_704"
         ]
 
-
-
+        let lowerAndUppers =
+        {            
+            "handguard_ak_caa_quad_rail_polymer":"handguard_ak_caa_quad_rail_polymer_upper",
+            "handguard_ak_izhmash_ak74_std_plum":"handguard_ak_izhmash_ak74_std_plum_upper",
+            "handguard_ak_tdi_akm_l":"handguard_ak_khyber_swiss_grather_upper",
+            "handguard_ak_tdi_akm_l_gld":"handguard_ak_khyber_swiss_grather_upper",
+            "handguard_ak_tdi_akm_l_red":"handguard_ak_khyber_swiss_grather_upper",
+            "handguard_ak_izhmash_ak74_std_wood":"handguard_ak_izhmash_ak74_std_wood_upper",
+            "handguard_ak_izhmash_ak74m_std_plastic":"handguard_ak_izhmash_ak74m_std_plastic_upper",
+            "handguard_ak_izhmash_ak100_rail_plastic":"handguard_ak_izhmash_ak74m_std_plastic_upper",
+            "handguard_ak_cugir_arms_factory_wasr_10_63_std":"handguard_ak_izhmash_akm_std_wood_upper",
+            "handguard_ak_izhmash_akm_std_wood":"handguard_ak_izhmash_akm_std_wood_upper",
+            "handguard_ak_molot_vepr_km_vpo_136":"handguard_ak_molot_vepr_km_vpo_136_upper",
+            "handguard_ak_molot_vepr_km_vpo_209":"handguard_ak_molot_vepr_km_vpo_209_upper",
+            "handguard_ak_magpul_moe_ak_blk":"handguard_ak_magpul_moe_ak_blk_upper",
+            "handguard_ak_magpul_moe_ak_fde":"handguard_ak_magpul_moe_ak_fde_upper",
+            "handguard_ak_magpul_moe_ak_od":"handguard_ak_magpul_moe_ak_od_upper",
+            "handguard_ak_magpul_moe_ak_plm":"handguard_ak_magpul_moe_ak_plm_upper",
+            "handguard_ak_magpul_moe_ak_sg":"handguard_ak_magpul_moe_ak_sg_upper",
+            "handguard_ak_zenit_b10":"handguard_ak_izhmash_ak74m_std_plastic_upper"
+        }
 
         //*******************************  CODE AND DATA **************************************** */
 
@@ -284,13 +303,44 @@ class AkSplitterMod
 
 
 
+        // ********************************** DEFAULT INVENTORY FIXING *******************************/
+
+        for(let edition in profiles)
+        {   
+            for(let side in profiles[edition])
+            {
+                
+                let allfixedweapons = [];
+                profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                {
+                    if( entireAkFamily.indexOf( String(profileitem._tpl)) != -1 )
+                    {             
+                        let gastube = profiles[edition][side].character.Inventory.items.find(item => item.parentId == profileitem._id && item.slotId == "mod_gas_block" )._id
+                        profiles[edition][side].character.Inventory.items.find(item => item.parentId == gastube ).parentId = profileitem._id
+
+                        //add upperhandguard
+                        profiles[edition][side].character.Inventory.items.push(  
+                        {
+                            "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
+                            "_tpl": "handguard_ak_izhmash_ak74m_std_plastic_upper",
+                            "parentId": gastube ,
+                            "slotId": "mod_handguard"
+                        });
+                    }
+                });
+            }
+        }
+
         /************************************ TRADERS ASSORT FIXING *********************************/
+        
+        //change default handguards to new system lower and upper 
         for(let trader in traders)
         {
             if(traders[trader].base.nickname != "caretaker" && trader != "ragfair")
             {
                 for(let assortItem in traders[trader].assort.items)
-                {
+                {   
+                    
                     if(entireAkFamily.indexOf(traders[trader].assort.items[assortItem]._tpl) != -1 ) //if the preset base weapon  is an ak family weapon
                     {   
                         let weaponId = traders[trader].assort.items[assortItem]._id;
@@ -332,7 +382,33 @@ class AkSplitterMod
                         }
 
                     }
+
+                    //add upper handguards to traders who sell the lower part
+                    else if( lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name] != undefined && traders[trader].assort.items[assortItem].parentId == "hideout")
+                    {   
+                        let index = traders[trader].assort.items.findIndex( (element) => element === traders[trader].assort.items[assortItem] )
+                        let newassortid = (Math.random() * 0xffffffffffffffffffffffff).toString(16)
+                        let upperAssortToAdd =  {
+                                                    "_id": newassortid,
+                                                    "_tpl": lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name],
+                                                    "parentId": "hideout",
+                                                    "slotId": "hideout",
+                                                    "upd":{},
+                                                    "StackObjectsCount": 2000
+                                                }
+
+                        traders[trader].assort.items.splice(index+1,0,upperAssortToAdd);
+                        traders[trader].assort.barter_scheme[newassortid] =   
+                        [[{
+                            "_tpl": "5449016a4bdc2d6f028b456f",
+                            "count": 1000
+                        }]]                         
+
+                    }
+                    
+
                 }
+
             }
 
         }
@@ -341,27 +417,7 @@ class AkSplitterMod
         
         let botTypeModsData = {};
         let gasblocksToChanges = [];
-        let lowerAndUppers =
-        {            
-            "handguard_ak_caa_quad_rail_polymer":"handguard_ak_caa_quad_rail_polymer_upper",
-            "handguard_ak_izhmash_ak74_std_plum":"handguard_ak_izhmash_ak74_std_plum_upper",
-            "handguard_ak_tdi_akm_l":"handguard_ak_khyber_swiss_grather_upper",
-            "handguard_ak_tdi_akm_l_gld":"handguard_ak_khyber_swiss_grather_upper",
-            "handguard_ak_tdi_akm_l_red":"handguard_ak_khyber_swiss_grather_upper",
-            "handguard_ak_izhmash_ak74_std_wood":"handguard_ak_izhmash_ak74_std_wood_upper",
-            "handguard_ak_izhmash_ak74m_std_plastic":"handguard_ak_izhmash_ak74m_std_plastic_upper",
-            "handguard_ak_izhmash_ak100_rail_plastic":"handguard_ak_izhmash_ak74m_std_plastic_upper",
-            "handguard_ak_cugir_arms_factory_wasr_10_63_std":"handguard_ak_izhmash_akm_std_wood_upper",
-            "handguard_ak_izhmash_akm_std_wood":"handguard_ak_izhmash_akm_std_wood_upper",
-            "handguard_ak_molot_vepr_km_vpo_136":"handguard_ak_molot_vepr_km_vpo_136_upper",
-            "handguard_ak_molot_vepr_km_vpo_209":"handguard_ak_molot_vepr_km_vpo_209_upper",
-            "handguard_ak_magpul_moe_ak_blk":"handguard_ak_magpul_moe_ak_blk_upper",
-            "handguard_ak_magpul_moe_ak_fde":"handguard_ak_magpul_moe_ak_fde_upper",
-            "handguard_ak_magpul_moe_ak_od":"handguard_ak_magpul_moe_ak_od_upper",
-            "handguard_ak_magpul_moe_ak_plm":"handguard_ak_magpul_moe_ak_plm_upper",
-            "handguard_ak_magpul_moe_ak_sg":"handguard_ak_magpul_moe_ak_sg_upper",
-            "handguard_ak_zenit_b10":"handguard_ak_izhmash_ak74m_std_plastic_upper"
-        }
+        
 
 
         /* so i will try to explain what's goin on and what's the logic : 
@@ -387,7 +443,7 @@ class AkSplitterMod
                             {
                                 if(gasblock == "5a01ad4786f77450561fda02") //vdm cs gas tube
                                 {
-                                    delete bots[botType].inventory.mods[gasblock]; //remove it we do,'t need to modify something
+                                    delete bots[botType].inventory.mods[gasblock]; //remove it we don't need to modify something
                                 }
                                 else
                                 {
@@ -398,6 +454,7 @@ class AkSplitterMod
                                             bots[botType].inventory.mods[weapon]["mod_handguard"].push(handguard); //store the gasblock handguard into the weapon slot
                                         }
                                     });
+
                                     gasblocksToChanges.push(gasblock); //store gasblocks for removing and replacing new handguards later
                                 }
 
@@ -482,9 +539,9 @@ class AkSplitterMod
                         }
                     })
                 }
-                else if(items[weapon]._weapClass !== undefined)
+                else if(items[weapon]._name.substring(0,7) == "weapon_" )
                 {
-                    //delete bots[botType].inventory.mods[weapon]; //for tesing purposes (only ak on bots)
+                    //delete bots[botType].inventory.mods[weapon]; //for testing purposes (only ak on bots)
                 }
             }
             
@@ -516,7 +573,9 @@ class AkSplitterMod
             
             //botTypeModsData[botType] = bots[botType].inventory.mods 
         }
-          
+        
+
+
         //fs.writeFileSync(__dirname + "/bot_mods.json", JSON.stringify(botTypeModsData, null, 4) );
 
 
