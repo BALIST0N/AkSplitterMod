@@ -525,7 +525,7 @@ class AkSplitterMod
                         items[handguard]._props.Slots.forEach(handguardSlot =>
                         {
                             slotsNames.push(handguardSlot._name);//get a list of existing slots on the items json
-                        })
+                        });
 
                         if(bots[botType].inventory.mods[handguard] !== undefined )
                         {
@@ -536,6 +536,11 @@ class AkSplitterMod
                                     delete bots[botType].inventory.mods[handguard][key]; //delete it : ) 
                                 }
                             });
+
+                            if( slotsNames.includes("mod_handguard") == true )
+                            {
+                                bots[botType].inventory.mods[handguard]["mod_handguard"] = items[handguard]._props.Slots.find(slot => slot._name == "mod_handguard" )._props.filters[0].Filters;
+                            }
                         }
                     })
                 }
@@ -563,19 +568,17 @@ class AkSplitterMod
                     //check compatibility for a type of handguard              //if its a special handguard that doesn't use gasblock locking system
                     if(lowerAndUppers[items[handguard]._name] === undefined && Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true) 
                     {   
+
                         bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];//in that case we can push it directly into the handguard filter
                     }
-
-                })
+                });
 
                 bots[botType].inventory.mods[gasblock]["mod_handguard"] = newUpperHanguards; //directly replace old lower list by the upper list
-            })
+            });
             
             //botTypeModsData[botType] = bots[botType].inventory.mods 
         }
         
-
-
         //fs.writeFileSync(__dirname + "/bot_mods.json", JSON.stringify(botTypeModsData, null, 4) );
 
 
