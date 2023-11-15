@@ -338,6 +338,7 @@ class AkSplitterMod
         {
             if(traders[trader].base.nickname != "caretaker" && trader != "ragfair")
             {
+                let new_uppers_to_add_assort = [];
                 for(let assortItem in traders[trader].assort.items)
                 {   
                     
@@ -381,32 +382,45 @@ class AkSplitterMod
                             })
                         }
 
-                    }
+                    }   
 
-                    //add upper handguards to traders who sell the lower part
+                    if( linkLowerAndUpper[traders[trader].assort.items[assortItem]._tpl] !== undefined && traders[trader].assort.items[assortItem].parentId == "hideout")
+                    {
+                        new_uppers_to_add_assort.push( 
+                            {
+                                "tpl": linkLowerAndUpper[traders[trader].assort.items[assortItem]._tpl]  ,
+                                "level" : traders[trader].assort.loyal_level_items[traders[trader].assort.items[assortItem]._id]
+                            });
+                    }
                     else if( lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name] != undefined && traders[trader].assort.items[assortItem].parentId == "hideout")
                     {   
-                        let index = traders[trader].assort.items.findIndex( (element) => element === traders[trader].assort.items[assortItem] )
-                        let newassortid = (Math.random() * 0xffffffffffffffffffffffff).toString(16)
-                        let upperAssortToAdd =  {
-                                                    "_id": newassortid,
-                                                    "_tpl": lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name],
-                                                    "parentId": "hideout",
-                                                    "slotId": "hideout",
-                                                    "upd":{},
-                                                    "StackObjectsCount": 2000
-                                                }
-
-                        traders[trader].assort.items.splice(index+1,0,upperAssortToAdd);
-                        traders[trader].assort.barter_scheme[newassortid] =   
-                        [[{
-                            "_tpl": "5449016a4bdc2d6f028b456f",
-                            "count": 1000
-                        }]]                         
-
+                        new_uppers_to_add_assort.push( 
+                        {
+                                "tpl": lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name],
+                                "level" : traders[trader].assort.loyal_level_items[traders[trader].assort.items[assortItem]._id]
+                        });
                     }
-                    
+                }
 
+                for(let lower in new_uppers_to_add_assort)
+                {
+                    let newassortid = (Math.random() * 0xffffffffffffffffffffffff).toString(16)
+                    let upperAssortToAdd =  {
+                                                "_id": newassortid,
+                                                "_tpl": new_uppers_to_add_assort[lower].tpl,
+                                                "parentId": "hideout",
+                                                "slotId": "hideout",
+                                                "upd":{},
+                                                "StackObjectsCount": 2000
+                                            }
+
+                    traders[trader].assort.items.push(upperAssortToAdd);
+                    traders[trader].assort.barter_scheme[newassortid] =   
+                    [[{
+                        "_tpl": "5449016a4bdc2d6f028b456f",
+                        "count": 1000
+                    }]]
+                    traders[trader].assort.loyal_level_items[newassortid] = new_uppers_to_add_assort[lower].level
                 }
 
             }
