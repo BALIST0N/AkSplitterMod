@@ -381,8 +381,71 @@ class AkSplitterMod
     
                             })
                         }
-
                     }   
+
+                    /*
+                    switch(traders[trader].assort.items[assortItem]._tpl)
+                    {
+                        case "5b237e425acfc4771e1be0b6":
+
+                            var newAssortId = (Math.random() * 0xffffffffffffffffffffffff).toString(16)
+                            traders[trader].assort.items.push(
+                            {
+                                "_id": newAssortId,
+                                "_tpl": "handguard_ak_troy_vent_hole_lower",
+                                "parentId": "hideout",
+                                "slotId": "hideout",
+                                "StackObjectsCount": 2000
+                            });
+                            traders[trader].assort.barter_scheme[newAssortId] =   
+                            [[{
+                                "_tpl": "5449016a4bdc2d6f028b456f",
+                                "count": 1000
+                            }]]
+                            traders[trader].assort.loyal_level_items[newAssortId] = traders[trader].assort.loyal_level_items[assortItem]
+
+
+                            break;
+
+                        case "5cf656f2d7f00c06585fb6eb":
+
+                            newAssortId = (Math.random() * 0xffffffffffffffffffffffff).toString(16)
+                            traders[trader].assort.items.push(
+                            {
+                                "_id": newAssortId,
+                                "_tpl": "handguard_ak_vs_vs_33c_lower",
+                                "parentId": "hideout",
+                                "slotId": "hideout",
+                                "StackObjectsCount": 2000
+                            });
+                            traders[trader].assort.barter_scheme[newAssortId] =   
+                            [[{
+                                "_tpl": "5449016a4bdc2d6f028b456f",
+                                "count": 1000
+                            }]]
+                            traders[trader].assort.loyal_level_items[newAssortId] = traders[trader].assort.loyal_level_items[assortItem]
+
+                            break;
+
+
+                        case "5d4aab30a4b9365435358c55":
+                            newAssortId = (Math.random() * 0xffffffffffffffffffffffff).toString(16)
+                            traders[trader].assort.items.push(
+                            {
+                                "_id": newAssortId,
+                                "_tpl": "handguard_ak_vs_vs_33c_wht_lower",
+                                "parentId": "hideout",
+                                "slotId": "hideout",
+                                "StackObjectsCount": 2000
+                            });
+                            traders[trader].assort.barter_scheme[newAssortId] =   
+                            [[{
+                                "_tpl": "5449016a4bdc2d6f028b456f",
+                                "count": 1000
+                            }]]
+                            traders[trader].assort.loyal_level_items[newAssortId] = traders[trader].assort.loyal_level_items[assortItem]
+                            break;
+                    }*/
 
                     if( linkLowerAndUpper[traders[trader].assort.items[assortItem]._tpl] !== undefined && traders[trader].assort.items[assortItem].parentId == "hideout")
                     {
