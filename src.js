@@ -34,32 +34,32 @@ class AkSplitterMod
 
         const akWeaponFamillyIds = //akweapon familly who use standard sized gastubes
         [
-            "5ac66d2e5acfc43b321d4b53", //ak-100 familly + ak74 familly
-            "5bf3e0490db83400196199af",
-            "5ac66d725acfc43b321d4b60",
-            "5644bd2b4bdc2d3b4c8b4572",
-            "5ac66cb05acfc40198510a10",
-            "5bf3e03b0db834001d2c4a9c",
-            "5ac66d9b5acfc4001633997a",
-            "5ac4cd105acfc40016339859",
-            "5ac66d015acfc400180ae6e4",
-            "5ab8e9fcd8ce870019439434",
+            "5ac66d2e5acfc43b321d4b53", //ak-103
+            //"5bf3e0490db83400196199af", //aks-74
+            "5ac66d725acfc43b321d4b60", //ak-104
+            "5644bd2b4bdc2d3b4c8b4572", //aks-74n
+            "5ac66cb05acfc40198510a10", //ak-101
+            //"5bf3e03b0db834001d2c4a9c", //ak-74
+            "5ac66d9b5acfc4001633997a", //ak-105
+            "5ac4cd105acfc40016339859", //ak-74M
+            "5ac66d015acfc400180ae6e4", //ak-102
+            "5ab8e9fcd8ce870019439434", //aks-74N
 
-            "59d6088586f774275f37482f", //AKM
+            //"59d6088586f774275f37482f", //AKM
             "5a0ec13bfcdbcb00165aa685", //AKMN
-            "59ff346386f77477562ff5e2", //AKMS
+            //"59ff346386f77477562ff5e2", //AKMS
             "5abcbc27d8ce8700182eceeb", //AKMSN
 
             "59e6152586f77473dc057aa1", //vepr-136
             "59e6687d86f77411d949b251", //vpo-209
         ]
 
-        const weaponToReplace = //these weapons have new bundles for having a mod_handguard slot (in the .bundle file)   
+        const weaponToReplace = //these weapons have new bundles for having a mod_handguard slot (in the .bundle file)
         {
 
-            "59d6088586f774275f37482f":"weapons/weapon_izhmash_akm_762x39_new.bundle",
+            //"59d6088586f774275f37482f":"weapons/weapon_izhmash_akm_762x39_new.bundle",
             "5a0ec13bfcdbcb00165aa685":"weapons/weapon_izhmash_akmn_762x39_new.bundle",
-            "59ff346386f77477562ff5e2":"weapons/weapon_izhmash_akms_762x39_new.bundle",
+            //"59ff346386f77477562ff5e2":"weapons/weapon_izhmash_akms_762x39_new.bundle",
             "5abcbc27d8ce8700182eceeb":"weapons/weapon_izhmash_akmsn_762x39_new.bundle",
             "59e6687d86f77411d949b251":"weapons/weapon_molot_akm_vpo_209_366tkm_new.bundle",
             "59e6152586f77473dc057aa1":"weapons/weapon_molot_vepr_km_vpo_136_762x39_new.bundle",
@@ -67,11 +67,10 @@ class AkSplitterMod
             "59984ab886f7743e98271174":"weapons/weapon_izhmash_pp-19-01_9x19_new.bundle",
             "59f9cabd86f7743a10721f46":"weapons/weapon_izhmash_saiga_9_9x19_new.bundle",
 
-            /*  
-            "57dc2fa62459775949412633", //aks-74u
-            "583990e32459771419544dd2", //aks-74un
-            "5839a40f24597726f856b511", //aks-74ub
-            */
+            //those have new sidemount slot
+            "5644bd2b4bdc2d3b4c8b4572":"weapons/weapon_izhmash_ak74n_545x39_new.bundle",
+            "5ab8e9fcd8ce870019439434":"weapons/weapon_izhmash_aks74n_545x39_new.bundle",
+            //"583990e32459771419544dd2":"weapons/weapon_izhmash_aks74un_545x39_new.bundle"
         }
 
 
@@ -88,8 +87,7 @@ class AkSplitterMod
             "59ccd11386f77428f24a488f"      //vityaz gas tube
         ];
 
-
-        const newUpperHanguards= 
+        const newUpperHanguards = 
         [
             "handguard_ak_caa_quad_rail_polymer_upper",
             "handguard_ak_izhmash_ak74_std_plum_upper",
@@ -104,6 +102,13 @@ class AkSplitterMod
             "handguard_ak_magpul_moe_ak_od_upper",
             "handguard_ak_magpul_moe_ak_plm_upper",
             "handguard_ak_magpul_moe_ak_sg_upper"
+        ]
+
+        const separatedSideMounts = 
+        [
+            "mount_siderail_RMP3",
+            "mount_siderail_RMP5",
+            "mount_siderail_RMPM"
         ]
 
         const linkLowerAndUpper = //hanguards with special uppers that don't une standard gasblock locking system
@@ -157,13 +162,13 @@ class AkSplitterMod
             items[key]._props.Prefab.path = value;
         }
 
+        items["583990e32459771419544dd2"]._props.Prefab.path = "weapons/weapon_izhmash_aks74un_545x39_new.bundle";
 
         //replace original handguards by lowers or gasBlocks 
         replacedItems.forEach(filename => 
         {
             let replacedItem = require("./items/" + filename);
             items[replacedItem._id] = replacedItem;
-
         });
 
         //add gasblocks to normal ak's
@@ -179,17 +184,31 @@ class AkSplitterMod
                 "59ccfdba86f7747f2109a587",
                 "5cf656f2d7f00c06585fb6eb"
             ]
-            
         });
 
+        for(let weapon in weaponToReplace )
+        {
+            if( items[weapon]._props.Slots.find(slot => slot._name.includes("mount")) !== undefined)
+            {
+                items[weapon]._props.Slots.find(slot => slot._name.includes("mount"))._props["filters"][0].Filter = separatedSideMounts;
+            }
+        }
+        items["583990e32459771419544dd2"]._props.Slots.find(slot => slot._name.includes("mount"))._props["filters"][0].Filter = separatedSideMounts
 
-        //enabling mod_handguard slot on each ak
+
+
+
+        //enabling mod_handguard slot & adding Rmp rails on each ak
         entireAkFamily.forEach(ak => 
         {
-            mod_handguard_slot._id = "mod_handguard_id_"+ak;
-            mod_handguard_slot._parent = ak;
-            items[ak]._props.Slots.push( mod_handguard_slot );
-        })
+            if(ak !== "583990e32459771419544dd2") //ignore AKS-74UN
+            {
+                mod_handguard_slot._id = "mod_handguard_id_"+ak;
+                mod_handguard_slot._parent = ak;
+                items[ak]._props.Slots.push( mod_handguard_slot );
+            }
+
+        });
 
 
         //remove current handguards on standard gasblocks and fill new upper handguards
@@ -213,8 +232,6 @@ class AkSplitterMod
             }
         });
 
-
-               
 
         //create new lowers handguards item from separated gasblocks bundles
         newLowersFromGastubes.forEach(lower => 
@@ -248,14 +265,130 @@ class AkSplitterMod
                     locales[lang][entry] = text;
                 }                
             }
-        })  
+        });
+
+        //add new mounts to items.json
+        separatedSideMounts.forEach(mountName => 
+        {
+            let mountData = require("./items/new/"+mountName+".json");
+            handbook.push(mountData.handbook);
+            items[mountName] = mountData.item;
+
+            for (const [lang, localeData] of Object.entries(locales)) 
+            {
+                for (const [entry, text] of Object.entries(mountData.locale)) 
+                {
+                    locales[lang][entry] = text;
+                }                
+            }
+        })
 
         //gp-25 remove new gasblock conflicts
         delete items["62e7e7bbe6da9612f743f1e0"]._props.ConflictingItems[items["62e7e7bbe6da9612f743f1e0"]._props.ConflictingItems.indexOf("5cf656f2d7f00c06585fb6eb")];
         delete items["62e7e7bbe6da9612f743f1e0"]._props.ConflictingItems[items["62e7e7bbe6da9612f743f1e0"]._props.ConflictingItems.indexOf("5cf656f2d7f00c06585fb6eb")];
 
 
-        /********************************* Script for modifying presets ************************************************/
+        /***************************************** DELETING USELESS AK **************************************************************/
+
+        let aksToDelete = 
+        {   
+            "59d6088586f774275f37482f":"5a0ec13bfcdbcb00165aa685",      //AKM -> AKMN
+            "59ff346386f77477562ff5e2":"5abcbc27d8ce8700182eceeb",      //akms -> AKMSN
+            "5bf3e03b0db834001d2c4a9c":"5644bd2b4bdc2d3b4c8b4572",      //ak74 -> ak74N
+            "5bf3e0490db83400196199af":"5ab8e9fcd8ce870019439434",      //aks74 -> aks74N
+            "57dc2fa62459775949412633":"583990e32459771419544dd2",      //aks74U -> aks74UN
+            "5839a40f24597726f856b511":"583990e32459771419544dd2"       //aks74UB -> aks74UN
+        }
+
+        
+        for(let preset in globalsPresets) 
+        {
+            let parentItem = globalsPresets[preset]._items.find(item => item._id == globalsPresets[preset]._parent );
+
+            if(Object.keys(aksToDelete).indexOf(parentItem._tpl) != -1 ) 
+            { 
+                delete globalsPresets[preset]
+            }
+        }
+
+
+        for (let handbookEntry in handbook.Items)
+        {
+            if( Object.keys(aksToDelete).indexOf( handbook.Items[handbookEntry].Id ) != -1 )
+            {
+                delete handbook.Items[handbookEntry];
+            }
+        }
+
+
+        for(let edition in profiles)
+        {
+            for(let side in profiles[edition])
+            { 
+                profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                {
+                    if( Object.keys(aksToDelete).indexOf( String(profileitem._tpl)) != -1 )
+                    {
+                        profileitem._tpl = aksToDelete[profileitem._tpl] 
+                    }
+                });
+            }
+        }
+
+        for(let botType in bots) 
+        {
+            for(let weapon in bots[botType].inventory.mods)
+            {
+                if(Object.keys(aksToDelete).indexOf(weapon) != -1 )
+                {
+                    //bots[botType].inventory.mods[weapon] = aksToDelete[weapon]
+                }
+            }
+        }
+
+        
+        for(let trader in traders) 
+        {
+            if(traders[trader].base.nickname != "caretaker" && trader != "ragfair")
+            {
+                for(let assortItem in traders[trader].assort.items)
+                {   
+                    if( Object.keys(aksToDelete).indexOf( traders[trader].assort.items[assortItem]._tpl) != -1 )
+                    {
+                        traders[trader].assort.items[assortItem]._tpl = aksToDelete[traders[trader].assort.items[assortItem]._tpl]
+                        //traders[trader].assort.items.splice(assortItem,1)
+                    }
+                }
+            }
+        }
+
+        for(let quest in quests) 
+        {
+            quests[quest] 
+            {
+                let a = quests[quest].conditions.AvailableForFinish.find(cond => cond._parent == "WeaponAssembly")
+                if(a !== undefined && Object.keys(aksToDelete).indexOf(a._props.target[0]) != -1 )
+                {
+                    //quests[quest].conditions.AvailableForFinish.find(cond => cond._parent == "WeaponAssembly")._props.target[0] = aksToDelete[a._props.target[0]]
+                }
+
+                a = quests[quest].conditions.AvailableForFinish.find(cond => cond._parent == "HandoverItem" && Object.keys(aksToDelete).indexOf(cond._props.target[0]) != -1)
+                if(a !== undefined)
+                {
+                    //quests[quest].conditions.AvailableForFinish.find(cond => cond._parent == "HandoverItem" && Object.keys(aksToDelete).indexOf(cond._props.target[0]) != -1) = aksToDelete[a._props.target[0]]
+                }
+
+                a = quests[quest].rewards.Success.find(reward => reward.items !== undefined && Object.keys(aksToDelete).indexOf(reward.items[0]._tpl) != -1)
+                if(a !== undefined)
+                {
+                    //quests[quest].rewards.Success.find( reward => reward.items !== undefined && Object.keys(aksToDelete).indexOf(reward.items[0]._tpl) != -1 ).items[0] = aksToDelete[a.items[0]._tpl]
+                }
+
+            }
+        }
+
+
+        /************************************** Script for modifying presets ************************************************/
 
         for(let preset in globalsPresets)
         {
@@ -302,8 +435,7 @@ class AkSplitterMod
         }
 
 
-
-        // ********************************** DEFAULT INVENTORY FIXING *******************************/
+        // *********************************** DEFAULT INVENTORY FIXING *******************************/
 
         for(let edition in profiles)
         {   
@@ -334,53 +466,40 @@ class AkSplitterMod
         /************************************ TRADERS ASSORT FIXING *********************************/
         
         //change default handguards to new system lower and upper 
+        
+        
         for(let trader in traders)
         {
             if(traders[trader].base.nickname != "caretaker" && trader != "ragfair")
             {
                 let new_uppers_to_add_assort = [];
                 for(let assortItem in traders[trader].assort.items)
-                {   
-                    
+                {     
                     if(entireAkFamily.indexOf(traders[trader].assort.items[assortItem]._tpl) != -1 ) //if the preset base weapon  is an ak family weapon
                     {   
                         let weaponId = traders[trader].assort.items[assortItem]._id;
 
-                        if(traders[trader].assort.items[assortItem]._tpl == "628a60ae6b1d481ff772e9c8")
+                        let childs = traders[trader].assort.items.filter(assortItem2 => assortItem2.parentId == weaponId);
+
+                        childs.forEach(child =>
                         {
-                            traders[trader].assort.items.push(
-                            {
-                                "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
-                                "_tpl": "handguard_slr_ion_lite_704",
-                                "parentId": weaponId,
-                                "slotId": "mod_handguard"
-                            });
-                        }
-                        else
+                            childs = childs.concat( traders[trader].assort.items.filter(assortItem2 => assortItem2.parentId == child._id) )
+                        });
+
+                        WeaponFixer(childs,weaponId).forEach(newChild => 
                         {
-                            let childs = traders[trader].assort.items.filter(assortItem2 => assortItem2.parentId == weaponId);
-    
-                            childs.forEach(child =>
+                            let index = traders[trader].assort.items.findIndex(item => item._id == newChild._id);
+                            if(index > -1)
                             {
-                                childs = childs.concat(traders[trader].assort.items.filter(assortItem2 => assortItem2.parentId == child._id))
-                            });
-    
-                            childs = WeaponFixer(childs,weaponId);
+                                traders[trader].assort.items[index] = newChild;
+                            }
+                            else
+                            {
+                                traders[trader].assort.items.push(newChild);
+                            }
                             
-                            childs.forEach(child => 
-                            {   
-                                let index = traders[trader].assort.items.findIndex(item => item._id == child._id)
-                                if(index > -1)
-                                {
-                                    traders[trader].assort.items[index] = child;
-                                }
-                                else
-                                {
-                                    traders[trader].assort.items.push(child);
-                                }
-    
-                            })
-                        }
+                        });
+
                     }   
 
                     /*
@@ -445,8 +564,10 @@ class AkSplitterMod
                             }]]
                             traders[trader].assort.loyal_level_items[newAssortId] = traders[trader].assort.loyal_level_items[assortItem]
                             break;
-                    }*/
+                    }
+                    */
 
+                    
                     if( linkLowerAndUpper[traders[trader].assort.items[assortItem]._tpl] !== undefined && traders[trader].assort.items[assortItem].parentId == "hideout")
                     {
                         new_uppers_to_add_assort.push( 
@@ -456,7 +577,7 @@ class AkSplitterMod
                             });
                     }
                     else if( lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name] != undefined && traders[trader].assort.items[assortItem].parentId == "hideout")
-                    {   
+                    {
                         new_uppers_to_add_assort.push( 
                         {
                                 "tpl": lowerAndUppers[items[traders[trader].assort.items[assortItem]._tpl]._name],
@@ -485,18 +606,17 @@ class AkSplitterMod
                     }]]
                     traders[trader].assort.loyal_level_items[newassortid] = new_uppers_to_add_assort[lower].level
                 }
-
+                
+                
             }
 
-        }
+        } 
         
-        /***********************************************  BOT GENERATION FIXING ****************************************/
+        /***********************************  BOT GENERATION FIXING ****************************************/
         
         let botTypeModsData = {};
         let gasblocksToChanges = [];
         
-
-
         /* so i will try to explain what's goin on and what's the logic : 
         for every bot  -> find all AK plateforms weapons -> get all gasblocks allowed for each weapons 
         -> get a list of allowed handgaurd and store it & we need to modify gasblocks childs at the same time
@@ -659,7 +779,7 @@ class AkSplitterMod
         //fs.writeFileSync(__dirname + "/bot_mods.json", JSON.stringify(botTypeModsData, null, 4) );
 
 
-        /******************************************************* QUESTS REWARDS FIXING SCRIPT **********************************************************/
+        /*************************************** QUESTS REWARDS FIXING SCRIPT **********************************************************/
 
         for(let quest in quests)
         {
@@ -673,8 +793,9 @@ class AkSplitterMod
             })
         }
 
+        
 
-        /***************************************** FUNCTIONS **************************************************/
+        /***************************************************** FUNCTIONS **************************************************/
         
 
         function WeaponFixer(weapon,weaponParentId)
@@ -705,9 +826,10 @@ class AkSplitterMod
                             {
                                 "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
                                 "_tpl": upperHandguard,
-                                "parentId": weapon.find(weaponPart2 => weaponPart2.slotId == "mod_gas_block")._id ,
+                                "parentId": weapon.find(weaponPart2 => weaponPart2.slotId == "mod_gas_block")._id,
                                 "slotId": "mod_handguard"
                             };
+
                         }
                         else
                         {
@@ -720,18 +842,18 @@ class AkSplitterMod
                                 "slotId": "mod_handguard"
                             };
                         }
+
+                        
+
                     }
                 });
-    
-                if(Object.keys(upperToAdd).length > 0 )
-                {
-                    weapon.push(upperToAdd);
-                }
+                weapon.push(upperToAdd)
             }
+
+
 
             return weapon;
         }
-
     }
 
 }

@@ -1,7 +1,6 @@
 {
 	"manifest": 
     [
-
         {
 			"key": "handguards/handguard_ak_545_design_red_heat_agressor_lower.bundle",
 			"dependencyKeys": 
@@ -727,6 +726,27 @@
 
 
 
+        {
+            "key": "mount/mod_mount_rmp_pm.bundle",
+            "dependencyKeys": 
+            [
+                "assets/content/weapons/ak74m/client_assets.bundle"
+            ]
+        },
+        {
+            "key": "mount/mod_mount_rmp3.bundle",
+            "dependencyKeys": 
+            [
+                "assets/content/weapons/ak74/client_assets.bundle"
+            ]
+        },
+        {
+            "key": "mount/mod_mount_rmp5_akmsn.bundle",
+            "dependencyKeys": 
+            [
+                "assets/content/weapons/akm/client_assets.bundle"
+            ]
+        },
 
 
 
@@ -976,10 +996,79 @@
                 "assets/content/weapons/rd704/textures/client_assets.bundle",
                 "cubemaps"
             ]
-        }
-        
+        },
+        {
+            "key": "weapons/weapon_izhmash_ak74n_545x39_new.bundle",
+            "dependencyKeys": [
+                "assets/content/weapons/ak74/client_assets.bundle",
+                "assets/content/weapons/wip/kibas tuning prefabs/muzzlejets_templates/default_assets.bundle",
+                "assets/systems/effects/muzzleflash/muzzleflash.bundle",
+                "assets/systems/effects/heathaze/defaultheathaze.bundle",
+                "assets/systems/effects/smoke.bundle",
+                "assets/content/weapons/animations/simple_animations.bundle",
+                "assets/content/weapons/weapon_root_anim_fix.bundle",
+                "assets/content/weapons/additional_hands/client_assets.bundle",
+                "assets/content/audio/weapons/generic",
+                "assets/content/audio/weapons/ak74.bundle",
+                "assets/content/audio/banks/ak74.bundle",
+                "assets/commonassets/physics/physicsmaterials.bundle",
+                "shaders",
+                "assets/content/weapons/ak74/textures/client_assets.bundle",
+                "assets/content/weapons/ak74m/textures/client_assets.bundle",
+                "cubemaps",
+                "assets/content/weapons/animations/spirit_animations.bundle",
+                "assets/content/audio/blendoptions/assets.bundle"
 
-        
-    
+            ]
+        },
+        {
+			"key": "weapons/weapon_izhmash_aks74un_545x39_new.bundle",
+			"dependencyKeys": 
+            [
+                "assets/content/weapons/aks74u/client_assets.bundle",
+                "assets/commonassets/physics/physicsmaterials.bundle",
+                "assets/systems/effects/muzzleflash/muzzleflash.bundle",
+                "assets/content/weapons/wip/kibas tuning prefabs/muzzlejets_templates/default_assets.bundle",
+                "assets/content/weapons/animations/spirit_animations.bundle",
+                "assets/content/weapons/additional_hands/client_assets.bundle",
+                "assets/content/weapons/weapon_root_anim_fix.bundle",
+                "./shaders",
+                "assets/content/items/mods/handguards/handguard_aks74u_izhmash_aks74u_std_wood_lod0_textures.bundle",
+                "assets/content/weapons/aks74u/textures/client_assets.bundle",
+                "./cubemaps",
+                "assets/systems/effects/smoke.bundle",
+                "assets/content/audio/banks/aksu.bundle",
+                "assets/content/audio/blendoptions/assets.bundle",
+                "assets/content/audio/weapons/generic",
+                "assets/content/audio/weapons/ak74.bundle",
+                "assets/content/weapons/animations/simple_animations.bundle",
+                "assets/content/audio/weapons/aksu.bundle"
+            ]
+        },
+        {
+            "key": "weapons/weapon_izhmash_aks74n_545x39_new.bundle",
+            "dependencyKeys": [
+                "assets/content/weapons/ak74/client_assets.bundle",
+                "assets/content/weapons/wip/kibas tuning prefabs/muzzlejets_templates/default_assets.bundle",
+                "assets/systems/effects/muzzleflash/muzzleflash.bundle",
+                "assets/systems/effects/heathaze/defaultheathaze.bundle",
+                "assets/systems/effects/smoke.bundle",
+                "assets/content/weapons/animations/simple_animations.bundle",
+                "assets/content/weapons/weapon_root_anim_fix.bundle",
+                "assets/content/weapons/additional_hands/client_assets.bundle",
+                "assets/content/audio/weapons/generic",
+                "assets/content/audio/weapons/ak74.bundle",
+                "assets/content/audio/banks/ak74.bundle",
+                "assets/commonassets/physics/physicsmaterials.bundle",
+                "shaders",
+                "assets/content/weapons/ak74/textures/client_assets.bundle",
+                "assets/content/weapons/ak74m/textures/client_assets.bundle",
+                "cubemaps",
+                "assets/content/weapons/animations/spirit_animations.bundle",
+                "assets/content/audio/blendoptions/assets.bundle",
+                "assets/content/weapons/aks74/client_assets.bundle",
+                "assets/content/weapons/aks74/weapon_izhmash_aks74n_545x39_container.bundle"
+            ]
+        }
     ]
 }
