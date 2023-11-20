@@ -726,6 +726,9 @@
 
 
 
+
+
+
         {
             "key": "mount/mod_mount_rmp_pm.bundle",
             "dependencyKeys": 
@@ -754,33 +757,7 @@
 
 
 
-        {
-			"key": "weapons/weapon_izhmash_akm_762x39_new.bundle",
-			"dependencyKeys": 
-            [
-                "assets/commonassets/physics/physicsmaterials.bundle",
-                "assets/content/weapons/akm/client_assets.bundle",
-                "shaders",      
-                "assets/content/items/mods/handguards/handguard_ak_izhmash_akm_std_wood_textures.bundle",       
-                "cubemaps",     
-                "assets/systems/effects/smoke.bundle",      
-                "assets/content/weapons/akm/textures/client_assets.bundle",     
-                "assets/content/weapons/akm/weapon_molot_akm_vpo_209_366tkm_container.bundle",      
-                "assets/content/weapons/wip/kibas tuning prefabs/muzzlejets_templates/default_assets.bundle",       
-                "assets/systems/effects/muzzleflash/muzzleflash.bundle",        
-                "assets/systems/effects/heathaze/defaultheathaze.bundle",       
-                "assets/content/audio/weapons/generic",
-                "assets/content/audio/weapons/ak74.bundle",
-                "assets/content/audio/weapons/akm/instrumental.bundle",
-                "assets/content/audio/banks/akm.bundle",
-                "assets/content/audio/blendoptions/assets.bundle",
-                "assets/content/weapons/animations/spirit_animations.bundle",
-                "assets/content/weapons/additional_hands/client_assets.bundle",
-                "assets/content/audio/weapons/akm.bundle",
-                "assets/content/weapons/animations/simple_animations.bundle",
-                "assets/content/weapons/weapon_root_anim_fix.bundle"
-            ]
-        },    
+        
         {
 			"key": "weapons/weapon_izhmash_akmn_762x39_new.bundle",
 			"dependencyKeys": 
@@ -806,33 +783,6 @@
                 "assets/content/weapons/weapon_root_anim_fix.bundle",
                 "assets/systems/effects/smoke.bundle",
                 "assets/content/weapons/akm/textures/client_assets.bundle"
-            ]
-        },
-        {
-			"key": "weapons/weapon_izhmash_akms_762x39_new.bundle",
-			"dependencyKeys": 
-            [
-                "assets/commonassets/physics/physicsmaterials.bundle",              
-                "assets/content/weapons/akm/client_assets.bundle",
-                "assets/systems/effects/muzzleflash/muzzleflash.bundle",
-                "assets/systems/effects/smoke.bundle",
-                "shaders",
-                "cubemaps",
-                "assets/content/items/mods/handguards/handguard_ak_izhmash_akm_std_wood_textures.bundle",
-                "assets/content/weapons/akm/textures/client_assets.bundle",
-                "assets/content/weapons/akm/weapon_molot_akm_vpo_209_366tkm_container.bundle",
-                "assets/content/audio/banks/akm.bundle",
-                "assets/content/audio/blendoptions/assets.bundle",
-                "assets/content/audio/weapons/generic",
-                "assets/content/weapons/animations/spirit_animations.bundle",
-                "assets/content/audio/weapons/ak74.bundle",
-                "assets/content/weapons/additional_hands/client_assets.bundle",
-                "assets/content/audio/weapons/akm.bundle",
-                "assets/systems/effects/heathaze/defaultheathaze.bundle",
-                "assets/content/audio/weapons/akm/instrumental.bundle",
-                "assets/content/weapons/animations/simple_animations.bundle",
-                "assets/content/weapons/weapon_root_anim_fix.bundle",
-                "assets/content/weapons/wip/kibas tuning prefabs/muzzlejets_templates/default_assets.bundle"
             ]
         },
         {

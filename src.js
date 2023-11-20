@@ -4,10 +4,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 class AkSplitterMod 
 {   
+    preAkiLoad(container)
+    {
+        container.resolve("ConfigServer").getConfig("aki-ragfair").dynamic.blacklist.custom.push(
+        "59d6088586f774275f37482f",
+        "59ff346386f77477562ff5e2",
+        "5bf3e03b0db834001d2c4a9c",
+        "5bf3e0490db83400196199af",
+        "57dc2fa62459775949412633",
+        "5839a40f24597726f856b511"
+        );
+
+
+    }
+
     postDBLoad(container) 
     {
-        const logger = container.resolve("WinstonLogger");
-        const modLoader = container.resolve("PreAkiModLoader");
         const items = container.resolve("DatabaseServer").getTables().templates.items;
         const handbook = container.resolve("DatabaseServer").getTables().templates.handbook.Items;
         const locales = container.resolve("DatabaseServer").getTables().locales.global;
@@ -16,6 +28,7 @@ class AkSplitterMod
         const globalsPresets = container.resolve("DatabaseServer").getTables().globals["ItemPresets"];
         const bots =  container.resolve("DatabaseServer").getTables().bots.types;
         const profiles = container.resolve ("DatabaseServer").getTables().templates.profiles;
+        
 
         /*************************************  DATA  ********************************************/
         const fs = require('fs');
@@ -306,11 +319,10 @@ class AkSplitterMod
             let parentItem = globalsPresets[preset]._items.find(item => item._id == globalsPresets[preset]._parent );
 
             if(Object.keys(aksToDelete).indexOf(parentItem._tpl) != -1 ) 
-            { 
+            {
                 delete globalsPresets[preset]
             }
         }
-
 
         for (let handbookEntry in handbook.Items)
         {
@@ -341,7 +353,16 @@ class AkSplitterMod
             {
                 if(Object.keys(aksToDelete).indexOf(weapon) != -1 )
                 {
-                    //bots[botType].inventory.mods[weapon] = aksToDelete[weapon]
+                    if( bots[botType].inventory.mods[aksToDelete[weapon]] !== undefined )
+                    {   
+                        Object.assign(bots[botType].inventory.mods[aksToDelete[weapon]], bots[botType].inventory.mods[weapon]) 
+                        delete bots[botType].inventory.mods[weapon];
+                    }
+                    else
+                    {
+                        bots[botType].inventory.mods[aksToDelete[weapon]] = bots[botType].inventory.mods[weapon];
+                        delete bots[botType].inventory.mods[weapon];
+                    }                    
                 }
             }
         }
