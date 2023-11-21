@@ -6,18 +6,24 @@ class AkSplitterMod
 {   
     preAkiLoad(container)
     {
-        container.resolve("ConfigServer").getConfig("aki-ragfair").dynamic.blacklist.custom.push(
-        "59d6088586f774275f37482f",
-        "59ff346386f77477562ff5e2",
-        "5bf3e03b0db834001d2c4a9c",
-        "5bf3e0490db83400196199af",
-        "57dc2fa62459775949412633",
-        "5839a40f24597726f856b511"
-        );
+        let removedAks = 
+        [
+            "59d6088586f774275f37482f",
+            "59ff346386f77477562ff5e2",
+            "5bf3e03b0db834001d2c4a9c",
+            "5bf3e0490db83400196199af",
+            "57dc2fa62459775949412633",
+            "5839a40f24597726f856b511"
+        ]
 
+        container.resolve("ConfigServer").getConfig("aki-ragfair").dynamic.blacklist.custom.push( removedAks );
+
+        container.resolve("ConfigServer").getConfig("aki-bot").equipment.pmc.blacklist[0].equipment["FirstPrimaryWeapon"] = removedAks;
+
+        delete container.resolve("ConfigServer").getConfig("aki-bot").equipment.pmc.weightingAdjustmentsByBotLevel[0].equipment.edit.FirstPrimaryWeapon["59d6088586f774275f37482f"]
 
     }
-
+    
     postDBLoad(container) 
     {
         const items = container.resolve("DatabaseServer").getTables().templates.items;
@@ -50,7 +56,7 @@ class AkSplitterMod
             "5ac66d2e5acfc43b321d4b53", //ak-103
             //"5bf3e0490db83400196199af", //aks-74
             "5ac66d725acfc43b321d4b60", //ak-104
-            "5644bd2b4bdc2d3b4c8b4572", //aks-74n
+            "5644bd2b4bdc2d3b4c8b4572", //ak-74n
             "5ac66cb05acfc40198510a10", //ak-101
             //"5bf3e03b0db834001d2c4a9c", //ak-74
             "5ac66d9b5acfc4001633997a", //ak-105
@@ -349,6 +355,24 @@ class AkSplitterMod
 
         for(let botType in bots) 
         {
+            for(let weapon in bots[botType].inventory.equipment.FirstPrimaryWeapon) 
+            {
+                if(Object.keys(aksToDelete).indexOf(weapon) != -1 )
+                {
+                    if(bots[botType].inventory.equipment.FirstPrimaryWeapon[aksToDelete[weapon]] === undefined)
+                    {
+                        bots[botType].inventory.equipment.FirstPrimaryWeapon[aksToDelete[weapon]] = bots[botType].inventory.equipment.FirstPrimaryWeapon[weapon];
+                    }
+                    else
+                    {
+                        bots[botType].inventory.equipment.FirstPrimaryWeapon[aksToDelete[weapon]] += bots[botType].inventory.equipment.FirstPrimaryWeapon[weapon];
+
+                    }
+                    delete bots[botType].inventory.equipment.FirstPrimaryWeapon[weapon];
+
+                    //console.log(bots[botType].inventory.equipment.FirstPrimaryWeapon[weapon], items[weapon]._name,"after", bots[botType].inventory.equipment.FirstPrimaryWeapon[aksToDelete[weapon]])
+                }
+            }
             for(let weapon in bots[botType].inventory.mods)
             {
                 if(Object.keys(aksToDelete).indexOf(weapon) != -1 )
@@ -650,6 +674,7 @@ class AkSplitterMod
             {
                 if(entireAkFamily.indexOf(weapon) != -1 ) //if the preset base weapon is an ak family weapon
                 {
+
                     bots[botType].inventory.mods[weapon]["mod_handguard"] = []; //create the handguard slot for ak weapon
                     
                     bots[botType].inventory.mods[weapon]["mod_gas_block"].forEach( gasblock => 
@@ -761,10 +786,29 @@ class AkSplitterMod
                             }
                         }
                     })
-                }
-                else if(items[weapon]._name.substring(0,7) == "weapon_" )
-                {
-                    //delete bots[botType].inventory.mods[weapon]; //for testing purposes (only ak on bots)
+
+                    let modsToAddToSlot = []
+                    for(let slot in bots[botType].inventory.mods[weapon] )
+                    {   
+                        
+                        if(slot.includes("mount") == true)
+                        {   
+                            bots[botType].inventory.mods[weapon][slot].forEach(mod => { modsToAddToSlot.push(mod) });
+                            bots[botType].inventory.mods[weapon][slot] = ["mount_siderail_RMP5"];
+
+                        }
+                    }
+
+                    if(modsToAddToSlot.length > 0 )
+                    {
+                        bots[botType].inventory.mods["mount_siderail_RMP5"] = modsToAddToSlot
+                    }
+
+
+
+
+
+
                 }
             }
             
