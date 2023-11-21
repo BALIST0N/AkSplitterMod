@@ -787,24 +787,26 @@ class AkSplitterMod
                         }
                     })
 
-                    let modsToAddToSlot = []
-                    for(let slot in bots[botType].inventory.mods[weapon] )
-                    {   
-                        
-                        if(slot.includes("mount") == true)
-                        {   
-                            bots[botType].inventory.mods[weapon][slot].forEach(mod => { modsToAddToSlot.push(mod) });
-                            bots[botType].inventory.mods[weapon][slot] = ["mount_siderail_RMP5"];
-
-                        }
-                    }
-
-                    if(modsToAddToSlot.length > 0 )
+                    if(weapon !== "628a60ae6b1d481ff772e9c8")
                     {
-                        bots[botType].inventory.mods["mount_siderail_RMP5"] = modsToAddToSlot
+                        let modsToAddToSlot = []
+                        for(let slot in bots[botType].inventory.mods[weapon] )
+                        {   
+                            
+                            if(slot.includes("mount") == true)
+                            {   
+                                bots[botType].inventory.mods[weapon][slot].forEach(mod => { modsToAddToSlot.push(mod) });
+                                bots[botType].inventory.mods[weapon][slot] = ["mount_siderail_RMP5"];
+                            }
+                        }
+
+                        if(modsToAddToSlot.length > 0 )
+                        {
+                            bots[botType].inventory.mods["mount_siderail_RMP5"] = {"mod_mount" : modsToAddToSlot }
+                        }
+
+                        console.log(botType,items[weapon]._name,bots[botType].inventory.mods["mount_siderail_RMP5"])
                     }
-
-
 
 
 
