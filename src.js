@@ -309,25 +309,27 @@ class AkSplitterMod
         {   
             for(let side in profiles[edition])
             {
-                
-                let allfixedweapons = [];
-                profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                if(side != "descriptionLocaleKey")
                 {
-                    if( entireAkFamily.indexOf( String(profileitem._tpl)) != -1 )
-                    {             
-                        let gastube = profiles[edition][side].character.Inventory.items.find(item => item.parentId == profileitem._id && item.slotId == "mod_gas_block" )._id
-                        profiles[edition][side].character.Inventory.items.find(item => item.parentId == gastube ).parentId = profileitem._id
-
-                        //add upperhandguard
-                        profiles[edition][side].character.Inventory.items.push(  
-                        {
-                            "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
-                            "_tpl": "handguard_ak_izhmash_ak74m_std_plastic_upper",
-                            "parentId": gastube ,
-                            "slotId": "mod_handguard"
-                        });
-                    }
-                });
+                let allfixedweapons = [];
+                    profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                    {
+                        if( entireAkFamily.indexOf( String(profileitem._tpl)) != -1 )
+                        {             
+                            let gastube = profiles[edition][side].character.Inventory.items.find(item => item.parentId == profileitem._id && item.slotId == "mod_gas_block" )._id
+                            profiles[edition][side].character.Inventory.items.find(item => item.parentId == gastube ).parentId = profileitem._id
+    
+                            //add upperhandguard
+                            profiles[edition][side].character.Inventory.items.push(  
+                            {
+                                "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
+                                "_tpl": "handguard_ak_izhmash_ak74m_std_plastic_upper",
+                                "parentId": gastube ,
+                                "slotId": "mod_handguard"
+                            });
+                        }
+                    });
+                }
             }
         }
 
