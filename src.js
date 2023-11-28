@@ -319,6 +319,10 @@ class AkSplitterMod
             "5839a40f24597726f856b511":"583990e32459771419544dd2"       //aks74UB -> aks74UN
         }
 
+        for(let ak in aksToDelete)
+        {
+            items[ak]._props.CanSellOnRagfair = false;
+        };
         
         for(let preset in globalsPresets) 
         {
@@ -343,13 +347,16 @@ class AkSplitterMod
         {
             for(let side in profiles[edition])
             { 
-                profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                if(side != "descriptionLocaleKey")
                 {
-                    if( Object.keys(aksToDelete).indexOf( String(profileitem._tpl)) != -1 )
+                    profiles[edition][side].character.Inventory.items.forEach(profileitem => 
                     {
-                        profileitem._tpl = aksToDelete[profileitem._tpl] 
-                    }
-                });
+                        if( Object.keys(aksToDelete).indexOf( String(profileitem._tpl)) != -1 )
+                        {
+                            profileitem._tpl = aksToDelete[profileitem._tpl] 
+                        }
+                    });
+                }
             }
         }
 
@@ -486,25 +493,27 @@ class AkSplitterMod
         {   
             for(let side in profiles[edition])
             {
-                
-                let allfixedweapons = [];
-                profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                if(side != "descriptionLocaleKey")
                 {
-                    if( entireAkFamily.indexOf( String(profileitem._tpl)) != -1 )
-                    {             
-                        let gastube = profiles[edition][side].character.Inventory.items.find(item => item.parentId == profileitem._id && item.slotId == "mod_gas_block" )._id
-                        profiles[edition][side].character.Inventory.items.find(item => item.parentId == gastube ).parentId = profileitem._id
+                    let allfixedweapons = [];
+                    profiles[edition][side].character.Inventory.items.forEach(profileitem => 
+                    {
+                        if( entireAkFamily.indexOf( String(profileitem._tpl)) != -1 )
+                        {             
+                            let gastube = profiles[edition][side].character.Inventory.items.find(item => item.parentId == profileitem._id && item.slotId == "mod_gas_block" )._id
+                            profiles[edition][side].character.Inventory.items.find(item => item.parentId == gastube ).parentId = profileitem._id
 
-                        //add upperhandguard
-                        profiles[edition][side].character.Inventory.items.push(  
-                        {
-                            "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
-                            "_tpl": "handguard_ak_izhmash_ak74m_std_plastic_upper",
-                            "parentId": gastube ,
-                            "slotId": "mod_handguard"
-                        });
-                    }
-                });
+                            //add upperhandguard
+                            profiles[edition][side].character.Inventory.items.push(  
+                            {
+                                "_id": (Math.random() * 0xffffffffffffffffffffffff).toString(16),
+                                "_tpl": "handguard_ak_izhmash_ak74m_std_plastic_upper",
+                                "parentId": gastube ,
+                                "slotId": "mod_handguard"
+                            });
+                        }
+                    });
+                }
             }
         }
 
@@ -692,6 +701,11 @@ class AkSplitterMod
                                 {
                                     bots[botType].inventory.mods[gasblock]["mod_handguard"].forEach(handguard =>
                                     {
+                                        if(handguard == "5648b4534bdc2d3d1c8b4580")
+                                        {
+                                            //console.log(botType,items[weapon]._name)
+                                        }
+
                                         if( bots[botType].inventory.mods[weapon]["mod_handguard"].includes(handguard) == false)
                                         {
                                             bots[botType].inventory.mods[weapon]["mod_handguard"].push(handguard); //store the gasblock handguard into the weapon slot
@@ -787,12 +801,12 @@ class AkSplitterMod
                         }
                     })
 
-                    if(weapon !== "628a60ae6b1d481ff772e9c8")
+                    //side rail handling
+                    if(Object.values(aksToDelete).indexOf(weapon) !== -1 )
                     {
                         let modsToAddToSlot = []
                         for(let slot in bots[botType].inventory.mods[weapon] )
                         {   
-                            
                             if(slot.includes("mount") == true)
                             {   
                                 bots[botType].inventory.mods[weapon][slot].forEach(mod => { modsToAddToSlot.push(mod) });
@@ -804,14 +818,9 @@ class AkSplitterMod
                         {
                             bots[botType].inventory.mods["mount_siderail_RMP5"] = {"mod_mount" : modsToAddToSlot }
                         }
-
-                        console.log(botType,items[weapon]._name,bots[botType].inventory.mods["mount_siderail_RMP5"])
                     }
-
-
-
-
                 }
+
             }
             
             gasblocksToChanges.forEach(gasblock => //loop to add uppers handguard to compatibles gasblock
@@ -832,7 +841,6 @@ class AkSplitterMod
                     //check compatibility for a type of handguard              //if its a special handguard that doesn't use gasblock locking system
                     if(lowerAndUppers[items[handguard]._name] === undefined && Object.keys(linkLowerAndUpper).includes(items[handguard]._name) == true) 
                     {   
-
                         bots[botType].inventory.mods[handguard]["mod_handguard"] = linkLowerAndUpper[handguard];//in that case we can push it directly into the handguard filter
                     }
                 });
